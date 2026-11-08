@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Birthday Game">
+<meta name="theme-color" content="#1f2a5a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="assets/icon-192.png">
+<title>Happy Birthday!</title>
+<style>
+  @font-face { font-family: "Fredoka"; src: url(assets/fonts/fredoka.woff2) format("woff2"); font-weight: 300 700; font-display: swap; }
+  @font-face { font-family: "Pixelify Sans"; src: url(assets/fonts/pixelify-sans.woff2) format("woff2"); font-weight: 400 700; font-display: swap; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; height: 100%; overflow: hidden; background: #141a3c;
+    touch-action: none; overscroll-behavior: none;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+    font-family: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  }
+  #game {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    image-rendering: pixelated; background: #62b8ea;
+  }
+
+  /* ---------- touch controls ---------- */
+  #controls { display: none; position: absolute; inset: 0; pointer-events: none; }
+  body.touch #controls { display: block; }
+  .pad {
+    position: absolute; bottom: max(14px, env(safe-area-inset-bottom));
+    pointer-events: auto; touch-action: none;
+  }
+  #dpad { left: max(14px, env(safe-area-inset-left)); display: flex; gap: 10px; }
+  #right { right: max(14px, env(safe-area-inset-right)); display: flex; gap: 14px; align-items: flex-end; }
+  .btn {
+    width: clamp(68px, 19vh, 112px); height: clamp(68px, 19vh, 112px);
+    border-radius: 50%; border: 3px solid rgba(245,241,232,.8);
+    background: rgba(26,18,34,.35); color: #f5f1e8;
+    display: flex; align-items: center; justify-content: center;
+    font-size: clamp(28px, 9vh, 52px); font-weight: 900;
+    text-shadow: 0 2px 6px rgba(0,0,0,.45);
+    backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+  }
+  .btn.down { background: rgba(245,241,232,.45); transform: scale(.94); }
+  #btnJump { width: clamp(84px, 24vh, 132px); height: clamp(84px, 24vh, 132px); background: rgba(240,160,60,.55); }
+  #btnPower { display: none; background: rgba(98,184,234,.55); }
+  #btnPower.show { display: flex; }
+
+  #mute {
+    position: absolute; top: max(8px, env(safe-area-inset-top)); right: max(8px, env(safe-area-inset-right));
+    width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(245,241,232,.7);
+    background: rgba(26,18,34,.5); color: #f5f1e8; font-size: 22px; line-height: 1;
+    display: flex; align-items: center; justify-content: center; pointer-events: auto; cursor: pointer;
+  }
+
+  /* ---------- rotate hint ---------- */
+  #rotate {
+    display: none; position: absolute; inset: 0; z-index: 10;
+    background: #1f2a5a; color: #f5f1e8; text-align: center;
+    align-items: center; justify-content: center; flex-direction: column; gap: 14px;
+    font-size: 22px; font-weight: 900; padding: 24px;
+  }
+  #rotate span { font-size: 64px; display: block; animation: wob 1.6s ease-in-out infinite; }
+  @keyframes wob { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-90deg); } }
+  @media (orientation: portrait) and (max-width: 900px) { #rotate { display: flex; } }
+</style>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="controls">
+    <div id="dpad" class="pad">
+      <div class="btn" id="btnLeft">&#9664;</div>
+      <div class="btn" id="btnRight">&#9654;</div>
+    </div>
+    <div id="right" class="pad">
+      <div class="btn" id="btnPower">&#127881;</div>
+      <div class="btn" id="btnJump">&#9650;</div>
+    </div>
+  </div>
+
+  <div id="mute" title="Sound on/off">&#128266;</div>
+
+  <div id="rotate"><div><span>&#128241;</span>Turn your device sideways to play!</div></div>
+
+  <script src="config.js"></script>
+  <script src="levels.js"></script>
+  <script src="game.js"></script>
+  <script>
+    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+    }
+  </script>
+</body>
+</html>
